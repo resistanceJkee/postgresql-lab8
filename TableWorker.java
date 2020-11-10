@@ -14,8 +14,8 @@ public class TableWorker {
     /**
      * Создаётся подключение к базе данных через драйвер pgJDBC. В Connection
      * попадают данные о подключении и затем возвращается тип данных Connection, который
-     * впоследствии присваивается приватному полю Connection для создания постоянного
-     * подключения к базе данных
+     * впоследствии присваивается приватному полю Connection для постоянного
+     * хранения данных о подключении к базе данных
      *
      * @return данные подключения
      */
@@ -105,47 +105,6 @@ public class TableWorker {
     }
 
     /**
-     * Выполняется sql запрос к серверу, который возвращает какие-то данные. Если был сбой,
-     * то вернётся строка (после попадания в catch), которая уведомит об ошибке. Иначе, стакаем
-     * строку до тех пор, пока есть какой-то незаписанный результат. Стакаем в формате
-     * "Колонка: значение", затем возвращаем её
-     *
-     * @param tableName название таблицы
-     * @param key название колонки
-     * @param znach значение колонки
-     * @return результат запроса
-     */
-    public String informationKeyOut(String tableName, String key, String znach) {
-        String out = "";
-        String query = "select * from \"DNS\".\"" + tableName + "\" where " + key + " = " + znach;
-        ResultSet rs = null;
-
-        try {
-            ps = con.prepareStatement(query);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-
-        try {
-            rs = ps.executeQuery();
-            int cntColumn = rs.getMetaData().getColumnCount();
-            String[] nameColumn = new String[cntColumn];
-            for (int i = 0; i < cntColumn; i++) {
-                nameColumn[i] = rs.getMetaData().getColumnName(i + 1);
-            }
-            while (rs.next()) {
-                for (int i = 0; i < cntColumn; i++) {
-                    out += nameColumn[i] + ": " + rs.getString(i + 1) + " ";
-                }
-            }
-        } catch (SQLException throwables) {
-            out = "Ошибка в названии таблицы или внутренняя ошибка";
-        }
-
-        return out;
-    }
-
-    /**
      * Создаётся пометка в таблице arcSkladSotrud (таблица, куда сотрудник делает пометку с текстом приказа, временем
      * и своим id об архивации плана), затем удаляется информация из плана и вставляется в архив сотрудника или склада
      *
@@ -156,7 +115,7 @@ public class TableWorker {
      */
     public void archiveInformation(String text, String plid, String strid, @NotNull String table) {
         ResultSet rs;
-        String querySS = "insert into \"DNS\".\"arcSkladSotrud\" (date_arc, text_report, id_sotrud) VALUES (current_date, \'" + text + "\', " + strid + ");";
+        String querySS = "insert into \"DNS\".\"arcSkladSotrud\" (date_arc, text_report, id_sotrud) VALUES (current_date, ?, ?);";
         String[] arc = {"objPSotrud", "objPSklad"};
         String[] arc_atr = {"id_plan_s", "id_plan"};
         String need = "";
@@ -171,10 +130,13 @@ public class TableWorker {
                 return;
             }
         }
-        String queryArc = "delete from \"DNS\".\"" + table + "\" where " + need + " = " + plid;
+        String queryArc = "delete from \"DNS\".\"" + table + "\" where " + need + " = ?";
         // arcSkladSotrud
+        int stridi = Integer.parseInt(strid);
         try {
             ps = con.prepareStatement(querySS);
+            ps.setString(1, text);
+            ps.setInt(2, stridi);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -184,8 +146,10 @@ public class TableWorker {
             throwables.printStackTrace();
         }
         // arc
+        int plidi = Integer.parseInt(plid);
         try {
             ps = con.prepareStatement(queryArc);
+            ps.setInt(1, plidi);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

@@ -149,31 +149,10 @@ public class UserInterface extends TableWorker {
         ta2_tab_name.setBorder(new LineBorder(new Color(0, 0, 0)));
         ta2_tab_name.setBackground(Color.WHITE);
 
-        JLabel lblNewLabel_2_1 = new JLabel("\u0410\u0442\u0440\u0438\u0431\u0443\u0442:");
-        lblNewLabel_2_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
-
-        JTextArea ta2_atr = new JTextArea();
-        ta2_atr.setFont(new Font("Monospaced", Font.PLAIN, 12));
-        ta2_atr.setBorder(new LineBorder(new Color(0, 0, 0)));
-        ta2_atr.setBackground(Color.WHITE);
-
-        JLabel lblNewLabel_2_1_1 = new JLabel("\u0417\u043D\u0430\u0447\u0435\u043D\u0438\u0435:");
-        lblNewLabel_2_1_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
-
-        JTextArea ta2_znach = new JTextArea();
-        ta2_znach.setFont(new Font("Monospaced", Font.PLAIN, 12));
-        ta2_znach.setBorder(new LineBorder(new Color(0, 0, 0)));
-        ta2_znach.setBackground(Color.WHITE);
-
         /**
          * TODO select *
          */
         JButton btnGetFull = new JButton("\u041F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0434\u0430\u043D\u043D\u044B\u0435");
-
-        /**
-         * TODO select * where some = var
-         */
-        JButton btnGetRow = new JButton("\u041F\u043E\u043B\u0443\u0447\u0438\u0442\u044C \u0434\u0430\u043D\u043D\u044B\u0435");
         
         JScrollPane scrollPane = new JScrollPane();
         GroupLayout gl_containerGetter = new GroupLayout(containerGetter);
@@ -191,49 +170,23 @@ public class UserInterface extends TableWorker {
         					.addGap(125)
         					.addComponent(btnGetFull, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE)))
         			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
-        			.addGap(7)
-        			.addGroup(gl_containerGetter.createParallelGroup(Alignment.LEADING)
-        				.addGroup(gl_containerGetter.createSequentialGroup()
-        					.addGap(9)
-        					.addComponent(lblNewLabel_2_1))
-        				.addComponent(lblNewLabel_2_1_1))
-        			.addGap(10)
-        			.addGroup(gl_containerGetter.createParallelGroup(Alignment.LEADING)
-        				.addComponent(ta2_atr, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(ta2_znach, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(btnGetRow, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE))
-        			.addContainerGap())
+        			.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)
+        			.addGap(245))
         );
         gl_containerGetter.setVerticalGroup(
         	gl_containerGetter.createParallelGroup(Alignment.LEADING)
         		.addGroup(gl_containerGetter.createSequentialGroup()
+        			.addGap(11)
         			.addGroup(gl_containerGetter.createParallelGroup(Alignment.LEADING)
+        				.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
         				.addGroup(gl_containerGetter.createSequentialGroup()
-        					.addGap(27)
-        					.addGroup(gl_containerGetter.createParallelGroup(Alignment.LEADING)
-        						.addGroup(gl_containerGetter.createSequentialGroup()
-        							.addComponent(lblNewLabel_2_1, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-        							.addGap(11)
-        							.addComponent(lblNewLabel_2_1_1, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE))
-        						.addGroup(gl_containerGetter.createSequentialGroup()
-        							.addComponent(ta2_atr, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-        							.addGap(11)
-        							.addComponent(ta2_znach, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-        							.addGap(11)
-        							.addComponent(btnGetRow))))
-        				.addGroup(gl_containerGetter.createSequentialGroup()
+        					.addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
         					.addGap(11)
         					.addGroup(gl_containerGetter.createParallelGroup(Alignment.LEADING)
-        						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
-        						.addGroup(gl_containerGetter.createSequentialGroup()
-        							.addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-        							.addGap(11)
-        							.addGroup(gl_containerGetter.createParallelGroup(Alignment.LEADING)
-        								.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-        								.addComponent(ta2_tab_name, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE))
-        							.addGap(7)
-        							.addComponent(btnGetFull)))))
+        						.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+        						.addComponent(ta2_tab_name, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE))
+        					.addGap(7)
+        					.addComponent(btnGetFull)))
         			.addContainerGap())
         );
         
@@ -252,23 +205,6 @@ public class UserInterface extends TableWorker {
 					ta2_out.setText("Введите название таблицы");
 				} else {
 					String txt = tw.informationOut(textFromTA);
-					ta2_out.setText(txt);
-				}
-			}
-		});
-
-		/**
-		 * TODO выборка
-		 */
-		btnGetRow.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String tableName = ta2_tab_name.getText();
-				String attribute = ta2_atr.getText();
-				String value = ta2_znach.getText();
-				if (tableName.isEmpty() || attribute.isEmpty() || value.isEmpty()) {
-					ta2_out.setText("Заполните все необходимые поля");
-				} else {
-					String txt = tw.informationKeyOut(tableName, attribute, value);
 					ta2_out.setText(txt);
 				}
 			}
@@ -303,9 +239,6 @@ public class UserInterface extends TableWorker {
         JLabel lblNewLabel_4 = new JLabel("\u0422\u0435\u043A\u0441\u0442 \u043F\u0440\u0438\u043A\u0430\u0437\u0430");
         lblNewLabel_4.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
-        /**
-         * TODO Архивирование
-         */
         JButton btnArchive = new JButton("\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C \u0432 \u0430\u0440\u0445\u0438\u0432");
         
         JScrollPane scrollPane_1 = new JScrollPane();
@@ -402,6 +335,9 @@ public class UserInterface extends TableWorker {
         );
         frmLabProg.getContentPane().setLayout(groupLayout);
 
+		/**
+		 * TODO архивирование
+		 */
 		btnArchive.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String planId = ta3_id_plan.getText();
