@@ -45,10 +45,11 @@ public class TableWorker {
      */
     public String workerCheck(String workerID) {
         ResultSet rs = null;
-        String query = "select fam_sotrud, name_sotrud from \"DNS\".\"objSotrud\" where id_sotrud = " + workerID;
+        String query = "select fam_sotrud, name_sotrud from \"DNS\".\"objSotrud\" where id_sotrud = ?";
         String out = "";
         try {
             ps = con.prepareStatement(query);
+            ps.setInt(1, Integer.parseInt(workerID));
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
