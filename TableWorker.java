@@ -10,12 +10,11 @@ public class TableWorker {
     private final String pass = "rstjke";
     private Connection con = connectToPostgreSQL();
     private PreparedStatement ps;
-
     /**
      * Создаётся подключение к базе данных через драйвер pgJDBC. В Connection
      * попадают данные о подключении и затем возвращается тип данных Connection, который
-     * впоследствии присваивается приватному полю Connection для постоянного
-     * хранения данных о подключении к базе данных
+     * впоследствии присваивается приватному полю Connection для хранения данных о
+     * подключении к базе данных
      *
      * @return данные подключения
      */
@@ -57,6 +56,8 @@ public class TableWorker {
             rs = ps.executeQuery();
             rs.next();
             out = rs.getString("fam_sotrud") + " " + rs.getString("name_sotrud");
+            rs.close();
+            ps.close();
         } catch (SQLException throwables) {
             out = "Такого номера нет!";
         }
@@ -79,8 +80,6 @@ public class TableWorker {
         String out = "";
         String query = "select * from \"DNS\".\"" + tableName + "\"";
         ResultSet rs = null;
-        int cntColumn;
-        String arr;
         try {
             ps = con.prepareStatement(query);
         } catch (SQLException throwables) {
@@ -88,7 +87,7 @@ public class TableWorker {
         }
         try {
             rs = ps.executeQuery();
-            cntColumn = rs.getMetaData().getColumnCount();
+            int cntColumn = rs.getMetaData().getColumnCount();
             String[] nameColumn = new String[cntColumn];
             for (int i = 0; i < cntColumn; i++) {
                 nameColumn[i] = rs.getMetaData().getColumnName(i + 1);
@@ -99,6 +98,8 @@ public class TableWorker {
                 }
                 out += "\n";
             }
+            rs.close();
+            ps.close();
         } catch (SQLException throwables) {
             out = "Ошибка в названии таблицы или внутренняя ошибка";
         }
@@ -106,8 +107,12 @@ public class TableWorker {
     }
 
     /**
-     * Создаётся пометка в таблице arcSkladSotrud (таблица, куда сотрудник делает пометку с текстом приказа, временем
-     * и своим id об архивации плана), затем удаляется информация из плана и вставляется в архив сотрудника или склада
+     * Создаётся пометка в таблице arcSkladSotrud (таблица, куда сотрудник делает пометку с
+     * текстом приказа, временем и своим id об архивации плана), затем формируеруется
+     * строка запроса, подставляются поля с текстом и id сотрудника. Перед этим происходит
+     * выяснение какое поле выбрать исходя из поступившей таблицы (id_plan_s или id_plan).
+     * Далее паршу String в int и подставляю во второй запрос через setInt, удаляя тем самым
+     * строку с нужным id. Далее через триггер эта строка перенесётся в нужную таблицу
      *
      * @param text текст приказа
      * @param plid id плана, который нужно архивировать
@@ -120,8 +125,6 @@ public class TableWorker {
         String[] arc = {"objPSotrud", "objPSklad"};
         String[] arc_atr = {"id_plan_s", "id_plan"};
         String need = "";
-        int irow = 0;
-        int drow = 0;
         if (table.equalsIgnoreCase(arc[0])) {
             need = arc_atr[0];
         } else {
@@ -142,7 +145,8 @@ public class TableWorker {
             throwables.printStackTrace();
         }
         try {
-            irow = ps.executeUpdate();
+            ps.executeUpdate();
+            ps.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -155,7 +159,8 @@ public class TableWorker {
             throwables.printStackTrace();
         }
         try {
-            drow = ps.executeUpdate();
+            ps.executeUpdate();
+            ps.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
